@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitnessKing — Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --dark: #111111;
+    --steel: #1a1a1a;
+    --mid: #222;
+    --gold: #c8a84b;
+    --gold-light: #e8c870;
+    --gold-dim: #7a6530;
+    --white: #f0ede8;
+    --gray: #888880;
+    --light-gray: #bbb;
+    --green: #2ecc71;
+    --red: #e74c3c;
+    --yellow: #f39c12;
+    --blue: #3498db;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-condensed: 'Barlow Condensed', sans-serif;
+    --font-body: 'Barlow', sans-serif;
+    --sidebar-w: 240px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--black); color: var(--white); font-family: var(--font-body); }
+
+  /* ── LOGIN ── */
+  #loginScreen {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: var(--black);
+    background-image: repeating-linear-gradient(-45deg, transparent, transparent 40px, rgba(200,168,75,0.015) 40px, rgba(200,168,75,0.015) 41px);
+  }
+  .login-box {
+    background: var(--dark); border: 1px solid rgba(200,168,75,0.2);
+    padding: 56px 48px; width: 100%; max-width: 400px;
+  }
+  .login-logo { font-family: var(--font-display); font-size: 32px; letter-spacing: 4px; color: var(--gold); margin-bottom: 4px; }
+  .login-logo span { color: var(--white); }
+  .login-sub { font-family: var(--font-condensed); font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--gray); margin-bottom: 36px; }
+  .login-field { margin-bottom: 20px; }
+  .login-field label { display: block; font-family: var(--font-condensed); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+  .login-field input {
+    width: 100%; background: var(--steel); border: 1px solid rgba(200,168,75,0.15);
+    color: var(--white); padding: 14px 16px; font-family: var(--font-body); font-size: 15px;
+    outline: none; transition: border-color 0.2s;
+  }
+  .login-field input:focus { border-color: var(--gold); }
+  .login-btn {
+    width: 100%; background: var(--gold); color: var(--black);
+    font-family: var(--font-condensed); font-size: 14px; letter-spacing: 2px;
+    text-transform: uppercase; font-weight: 700; padding: 16px; border: none; cursor: pointer;
+    transition: background 0.2s; margin-top: 8px;
+  }
+  .login-btn:hover { background: var(--gold-light); }
+  .login-hint { font-size: 12px; color: var(--gray); margin-top: 16px; text-align: center; line-height: 1.6; }
+  .login-error { color: var(--red); font-size: 12px; margin-top: 10px; text-align: center; display: none; }
+
+  /* ── ADMIN SHELL ── */
+  #adminApp { display: none; min-height: 100vh; }
+
+  /* Sidebar */
+  .sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w);
+    background: var(--dark); border-right: 1px solid rgba(200,168,75,0.1);
+    display: flex; flex-direction: column; z-index: 50;
+  }
+  .sidebar-logo {
+    padding: 28px 24px; border-bottom: 1px solid rgba(200,168,75,0.1);
+    font-family: var(--font-display); font-size: 22px; letter-spacing: 3px; color: var(--gold);
+  }
+  .sidebar-logo span { color: var(--white); }
+  .sidebar-logo small { display: block; font-family: var(--font-condensed); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); margin-top: 2px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px; padding: 14px 24px;
+    font-family: var(--font-condensed); font-size: 13px; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--gray); cursor: pointer; transition: all 0.2s; border-left: 2px solid transparent;
+  }
+  .nav-item:hover { color: var(--white); background: rgba(255,255,255,0.03); }
+  .nav-item.active { color: var(--gold); border-left-color: var(--gold); background: rgba(200,168,75,0.05); }
+  .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+  .sidebar-footer {
+    margin-top: auto; padding: 20px 24px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .logout-btn {
+    font-family: var(--font-condensed); font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--gray); background: none; border: none; cursor: pointer; transition: color 0.2s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .logout-btn:hover { color: var(--red); }
+
+  /* Main */
+  .main { margin-left: var(--sidebar-w); padding: 40px 40px; min-height: 100vh; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* Top bar */
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;
+  }
+  .page-title { font-family: var(--font-display); font-size: 48px; letter-spacing: 2px; line-height: 1; }
+  .topbar-actions { display: flex; gap: 12px; align-items: center; }
+  .badge-new {
+    background: var(--red); color: #fff; border-radius: 20px; padding: 4px 10px;
+    font-family: var(--font-condensed); font-size: 11px; font-weight: 700; letter-spacing: 1px;
+  }
+
+  /* Stat cards */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 36px; }
+  .stat-card {
+    background: var(--steel); padding: 28px 24px;
+    border-top: 2px solid var(--gold-dim); position: relative;
+  }
+  .stat-card.green { border-top-color: var(--green); }
+  .stat-card.red { border-top-color: var(--red); }
+  .stat-card.blue { border-top-color: var(--blue); }
+  .stat-val { font-family: var(--font-display); font-size: 44px; line-height: 1; margin-bottom: 4px; }
+  .stat-lbl { font-family: var(--font-condensed); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); }
+  .stat-delta { position: absolute; top: 20px; right: 20px; font-family: var(--font-condensed); font-size: 12px; font-weight: 700; }
+  .stat-delta.up { color: var(--green); }
+  .stat-delta.down { color: var(--red); }
+
+  /* Tables */
+  .card { background: var(--steel); margin-bottom: 24px; }
+  .card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .card-title { font-family: var(--font-condensed); font-size: 14px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; }
+  .card-actions { display: flex; gap: 8px; }
+  .btn-sm {
+    font-family: var(--font-condensed); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;
+    padding: 8px 16px; cursor: pointer; border: none; transition: all 0.2s;
+  }
+  .btn-gold { background: var(--gold); color: var(--black); }
+  .btn-gold:hover { background: var(--gold-light); }
+  .btn-outline { background: none; border: 1px solid rgba(200,168,75,0.3); color: var(--gold); }
+  .btn-outline:hover { background: rgba(200,168,75,0.08); }
+  .btn-ghost { background: none; border: 1px solid rgba(255,255,255,0.1); color: var(--gray); }
+  .btn-ghost:hover { color: var(--white); border-color: rgba(255,255,255,0.2); }
+
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { border-bottom: 1px solid rgba(255,255,255,0.1); }
+  th {
+    text-align: left; padding: 14px 24px;
+    font-family: var(--font-condensed); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray);
+    font-weight: 600;
+  }
+  tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.15s;
+  }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
+  td { padding: 14px 24px; font-size: 14px; }
+  .td-name { font-weight: 500; color: var(--white); }
+  .td-gray { color: var(--gray); font-size: 13px; }
+
+  /* Status pill */
+  .pill {
+    display: inline-block; padding: 4px 12px; border-radius: 0;
+    font-family: var(--font-condensed); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;
+  }
+  .pill-pending { background: rgba(243,156,18,0.15); color: var(--yellow); }
+  .pill-active { background: rgba(46,204,113,0.12); color: var(--green); }
+  .pill-expired { background: rgba(231,76,60,0.12); color: var(--red); }
+  .pill-elite { background: rgba(200,168,75,0.15); color: var(--gold); }
+  .pill-pro { background: rgba(52,152,219,0.15); color: var(--blue); }
+  .pill-starter { background: rgba(255,255,255,0.06); color: var(--light-gray); }
+
+  /* Action buttons in table */
+  .action-row { display: flex; gap: 6px; }
+  .tbl-btn {
+    font-family: var(--font-condensed); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;
+    padding: 5px 10px; cursor: pointer; border: none; transition: all 0.2s;
+  }
+  .tbl-btn-approve { background: rgba(46,204,113,0.15); color: var(--green); }
+  .tbl-btn-approve:hover { background: rgba(46,204,113,0.25); }
+  .tbl-btn-wa { background: rgba(37,211,102,0.12); color: #25D366; }
+  .tbl-btn-wa:hover { background: rgba(37,211,102,0.22); }
+  .tbl-btn-del { background: rgba(231,76,60,0.1); color: var(--red); }
+  .tbl-btn-del:hover { background: rgba(231,76,60,0.2); }
+  .tbl-btn-view { background: rgba(255,255,255,0.06); color: var(--light-gray); }
+  .tbl-btn-view:hover { background: rgba(255,255,255,0.1); }
+
+  /* Filter bar */
+  .filter-bar {
+    display: flex; gap: 10px; align-items: center; padding: 16px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.06); flex-wrap: wrap;
+  }
+  .filter-input {
+    background: var(--mid); border: 1px solid rgba(255,255,255,0.08); color: var(--white);
+    padding: 8px 14px; font-family: var(--font-body); font-size: 13px; outline: none;
+    min-width: 220px; transition: border-color 0.2s;
+  }
+  .filter-input:focus { border-color: rgba(200,168,75,0.4); }
+  .filter-select {
+    background: var(--mid); border: 1px solid rgba(255,255,255,0.08); color: var(--gray);
+    padding: 8px 14px; font-family: var(--font-body); font-size: 13px; outline: none; cursor: pointer;
+    appearance: none;
+  }
+  .filter-select:focus { border-color: rgba(200,168,75,0.4); color: var(--white); }
+  .filter-select option { background: var(--steel); }
+
+  /* Member detail drawer */
+  .drawer-overlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.7);
+  }
+  .drawer-overlay.open { display: block; }
+  .drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; width: 400px; z-index: 201;
+    background: var(--dark); border-left: 1px solid rgba(200,168,75,0.15);
+    padding: 32px; overflow-y: auto;
+    transform: translateX(100%); transition: transform 0.3s ease;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--gray); font-size: 18px; cursor: pointer; }
+  .drawer-close:hover { color: var(--white); }
+  .drawer-name { font-family: var(--font-display); font-size: 36px; letter-spacing: 2px; margin-bottom: 4px; }
+  .drawer-plan { font-family: var(--font-condensed); font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 24px; }
+  .drawer-field { margin-bottom: 16px; }
+  .drawer-label { font-family: var(--font-condensed); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); margin-bottom: 4px; }
+  .drawer-value { font-size: 14px; color: var(--white); }
+  .drawer-divider { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 24px 0; }
+  .drawer-actions { display: flex; flex-direction: column; gap: 10px; }
+  .drawer-btn {
+    display: flex; align-items: center; gap: 10px; justify-content: center;
+    padding: 14px; font-family: var(--font-condensed); font-size: 13px; letter-spacing: 2px;
+    text-transform: uppercase; font-weight: 700; cursor: pointer; border: none; text-decoration: none;
+    transition: all 0.2s;
+  }
+  .drawer-btn-wa { background: #25D366; color: #fff; }
+  .drawer-btn-wa:hover { background: #1ebe57; }
+  .drawer-btn-approve { background: var(--gold); color: var(--black); }
+  .drawer-btn-approve:hover { background: var(--gold-light); }
+
+  /* Revenue chart */
+  .chart-bars { display: flex; align-items: flex-end; gap: 8px; height: 140px; padding: 16px 24px 0; }
+  .chart-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .chart-bar {
+    width: 100%; background: var(--gold-dim); transition: background 0.2s;
+    cursor: pointer; position: relative;
+  }
+  .chart-bar:hover { background: var(--gold); }
+  .chart-bar.current { background: var(--gold); }
+  .chart-month { font-family: var(--font-condensed); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
+  .chart-labels { display: flex; gap: 8px; padding: 8px 24px 20px; border-top: 1px solid rgba(255,255,255,0.04); margin-top: 8px; }
+  .chart-labels .chart-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; }
+
+  /* Empty state */
+  .empty-state { text-align: center; padding: 64px 24px; }
+  .empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.3; }
+  .empty-title { font-family: var(--font-condensed); font-size: 20px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); margin-bottom: 8px; }
+  .empty-sub { font-size: 13px; color: var(--gray); opacity: 0.6; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 32px; right: 32px; z-index: 999;
+    background: var(--gold); color: var(--black);
+    font-family: var(--font-condensed); font-size: 13px; letter-spacing: 1px;
+    padding: 14px 24px; transform: translateY(80px); opacity: 0;
+    transition: all 0.3s; pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  @media (max-width: 900px) {
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .sidebar { width: 60px; }
+    .sidebar .sidebar-logo, .sidebar .nav-item span, .sidebar .logout-btn span { display: none; }
+    .main { margin-left: 60px; padding: 24px 16px; }
+    .drawer { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN ── -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">IRON<span>FORGE</span></div>
+    <div class="login-sub">Admin Dashboard</div>
+    <div class="login-field">
+      <label>Username</label>
+      <input type="text" id="loginUser" placeholder="admin" onkeypress="if(event.key==='Enter') doLogin()">
+    </div>
+    <div class="login-field">
+      <label>Password</label>
+      <input type="password" id="loginPass" placeholder="••••••••" onkeypress="if(event.key==='Enter') doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Login →</button>
+    <div class="login-hint">Demo credentials: admin / ironforge2025</div>
+    <div class="login-error" id="loginError">Invalid credentials. Try admin / ironforge2025</div>
+  </div>
+</div>
+
+<!-- ── ADMIN APP ── -->
+<div id="adminApp">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-logo">FITNESS<span>KING</span><small>Admin Panel</small></div>
+    <div class="nav-item active" onclick="showPage('dashboard')"><span class="nav-icon">📊</span><span>Dashboard</span></div>
+    <div class="nav-item" onclick="showPage('members')"><span class="nav-icon">👥</span><span>Members</span></div>
+    <div class="nav-item" onclick="showPage('new-registrations')"><span class="nav-icon">🆕</span><span>New Registrations</span></div>
+    <div class="nav-item" onclick="showPage('revenue')"><span class="nav-icon">💰</span><span>Revenue</span></div>
+    <div class="sidebar-footer">
+      <a href="/" style="display:flex;align-items:center;gap:8px;font-family:var(--font-condensed);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);text-decoration:none;margin-bottom:12px;transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--gray)'">← <span>View Website</span></a>
+      <button class="logout-btn" onclick="doLogout()">🚪 <span>Logout</span></button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="topbar">
+        <div class="page-title">DASHBOARD</div>
+        <div class="topbar-actions">
+          <span style="font-size:12px;color:var(--gray);font-family:var(--font-condensed);letter-spacing:1px;" id="currentDate"></span>
+        </div>
+      </div>
+      <div class="stats-row" id="statsRow">
+        <!-- Rendered by JS -->
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Revenue — Last 6 Months</span>
+        </div>
+        <div class="chart-bars" id="chartBars"></div>
+        <div class="chart-labels" id="chartLabels"></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Recent Registrations</span>
+          <button class="btn-sm btn-outline" onclick="showPage('new-registrations')">View All</button>
+        </div>
+        <table>
+          <thead><tr><th>Name</th><th>Plan</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="recentTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- MEMBERS -->
+    <div class="page" id="page-members">
+      <div class="topbar">
+        <div class="page-title">MEMBERS</div>
+        <button class="btn-sm btn-gold" onclick="showPage('new-registrations')">+ Add Member</button>
+      </div>
+      <div class="card">
+        <div class="filter-bar">
+          <input class="filter-input" type="text" placeholder="Search by name or phone…" id="memberSearch" oninput="renderMembers()">
+          <select class="filter-select" id="memberPlanFilter" onchange="renderMembers()">
+            <option value="">All Plans</option>
+            <option>Starter</option><option>Pro</option><option>Elite</option><option>Personal Training</option>
+          </select>
+          <select class="filter-select" id="memberStatusFilter" onchange="renderMembers()">
+            <option value="">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="pending">Pending</option>
+            <option value="expired">Expired</option>
+          </select>
+        </div>
+        <table>
+          <thead><tr><th>Name</th><th>Phone</th><th>Plan</th><th>Joined</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="membersTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- NEW REGISTRATIONS -->
+    <div class="page" id="page-new-registrations">
+      <div class="topbar">
+        <div class="page-title">NEW SIGN-UPS</div>
+        <span id="pendingBadge" style="display:none;" class="badge-new">0 Pending</span>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Pending Approval</span>
+          <button class="btn-sm btn-ghost" onclick="addDemoMember()">+ Add Demo Member</button>
+        </div>
+        <table>
+          <thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Plan</th><th>Goal</th><th>Registered</th><th>Actions</th></tr></thead>
+          <tbody id="pendingTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- REVENUE -->
+    <div class="page" id="page-revenue">
+      <div class="topbar"><div class="page-title">REVENUE</div></div>
+      <div class="stats-row" id="revenueStats"></div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Plan Breakdown</span></div>
+        <table>
+          <thead><tr><th>Plan</th><th>Members</th><th>Price/mo</th><th>Monthly Revenue</th></tr></thead>
+          <tbody id="planBreakdown"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /adminApp -->
+
+<!-- Member Drawer -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="memberDrawer">
+  <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  <div class="drawer-name" id="dName"></div>
+  <div class="drawer-plan" id="dPlan"></div>
+  <div class="drawer-field"><div class="drawer-label">Phone</div><div class="drawer-value" id="dPhone"></div></div>
+  <div class="drawer-field"><div class="drawer-label">Email</div><div class="drawer-value" id="dEmail"></div></div>
+  <div class="drawer-field"><div class="drawer-label">Age / Gender</div><div class="drawer-value" id="dAge"></div></div>
+  <div class="drawer-field"><div class="drawer-label">Fitness Goal</div><div class="drawer-value" id="dGoal"></div></div>
+  <div class="drawer-field"><div class="drawer-label">Join Date</div><div class="drawer-value" id="dJoin"></div></div>
+  <div class="drawer-field"><div class="drawer-label">Status</div><div class="drawer-value" id="dStatus"></div></div>
+  <hr class="drawer-divider">
+  <div class="drawer-actions">
+    <a id="dWhatsApp" href="#" target="_blank" class="drawer-btn drawer-btn-wa">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Message on WhatsApp
+    </a>
+    <button class="drawer-btn drawer-btn-approve" id="dApproveBtn" onclick="approveCurrentMember()">✓ Approve & Activate</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── Seed demo data ──
+  const DEMO_MEMBERS = [
+    { id: 1001, name: 'Rahul Sharma', phone: '+91 98765 43210', email: 'rahul@email.com', age: 28, gender: 'Male', plan: 'Pro', goal: 'Build muscle mass', status: 'active', joinDate: '2025-01-15', registered: '15 Jan 2025, 9:30am' },
+    { id: 1002, name: 'Priya Mohanty', phone: '+91 87654 32109', email: 'priya@email.com', age: 25, gender: 'Female', plan: 'Elite', goal: 'Competition prep', status: 'active', joinDate: '2025-02-01', registered: '1 Feb 2025, 11:00am' },
+    { id: 1003, name: 'Arjun Patel', phone: '+91 76543 21098', email: 'arjun@email.com', age: 32, gender: 'Male', plan: 'Starter', goal: 'General fitness', status: 'active', joinDate: '2025-02-20', registered: '20 Feb 2025, 6:00am' },
+    { id: 1004, name: 'Sneha Rao', phone: '+91 70773 86821', email: 'sneha@email.com', age: 27, gender: 'Female', plan: 'Pro', goal: 'Weight loss', status: 'active', joinDate: '2025-03-01', registered: '1 Mar 2025, 8:00am' },
+    { id: 1005, name: 'Karan Singh', phone: '+91 88776 65544', email: 'karan@email.com', age: 30, gender: 'Male', plan: 'Elite', goal: 'Powerlifting', status: 'pending', joinDate: '2025-03-10', registered: '10 Mar 2025, 7:15am' },
+    { id: 1006, name: 'Deepika Nair', phone: '+91 77665 54433', email: 'deepika@email.com', age: 24, gender: 'Female', plan: 'Starter', goal: 'Tone up', status: 'pending', joinDate: '2025-03-12', registered: '12 Mar 2025, 5:45pm' },
+  ];
+
+  function getMembers() {
+    const stored = localStorage.getItem('ironforge_members');
+    const members = stored ? JSON.parse(stored) : [];
+    // Merge demo members if no stored data
+    if (!localStorage.getItem('ironforge_seeded')) {
+      const all = [...DEMO_MEMBERS, ...members];
+      localStorage.setItem('ironforge_members', JSON.stringify(all));
+      localStorage.setItem('ironforge_seeded', '1');
+      return all;
+    }
+    return members.length ? members : DEMO_MEMBERS;
+  }
+  function saveMembers(m) { localStorage.setItem('ironforge_members', JSON.stringify(m)); }
+
+  // ── Login ──
+  function doLogin() {
+    const u = document.getElementById('loginUser').value;
+    const p = document.getElementById('loginPass').value;
+    if (u === 'admin' && p === 'ironforge2025') {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminApp').style.display = 'block';
+      initAdmin();
+    } else {
+      document.getElementById('loginError').style.display = 'block';
+    }
+  }
+  function doLogout() {
+    document.getElementById('adminApp').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+  }
+
+  // ── Navigation ──
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => {
+      if (n.getAttribute('onclick') && n.getAttribute('onclick').includes(id)) n.classList.add('active');
+    });
+    if (id === 'members') renderMembers();
+    if (id === 'new-registrations') renderPending();
+    if (id === 'revenue') renderRevenue();
+    if (id === 'dashboard') renderDashboard();
+  }
+
+  // ── Init ──
+  function initAdmin() {
+    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-IN', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    renderDashboard();
+  }
+
+  // ── Dashboard ──
+  function renderDashboard() {
+    const members = getMembers();
+    const active = members.filter(m => m.status === 'active').length;
+    const pending = members.filter(m => m.status === 'pending').length;
+    const revenue = calcRevenue(members);
+
+    document.getElementById('statsRow').innerHTML = `
+      <div class="stat-card"><div class="stat-val">${members.length}</div><div class="stat-lbl">Total Members</div></div>
+      <div class="stat-card green"><div class="stat-val">${active}</div><div class="stat-lbl">Active</div><div class="stat-delta up">●</div></div>
+      <div class="stat-card red"><div class="stat-val">${pending}</div><div class="stat-lbl">Pending Approval</div></div>
+      <div class="stat-card blue"><div class="stat-val">₹${revenue.toLocaleString('en-IN')}</div><div class="stat-lbl">Est. Monthly Revenue</div></div>
+    `;
+    if (pending > 0) {
+      document.getElementById('pendingBadge').style.display = 'inline-block';
+      document.getElementById('pendingBadge').textContent = pending + ' Pending';
+    }
+
+    // Revenue chart
+    const months = ['Oct','Nov','Dec','Jan','Feb','Mar'];
+    const vals = [87000, 94000, 112000, 105000, 118000, revenue];
+    const max = Math.max(...vals);
+    const bars = document.getElementById('chartBars');
+    const labels = document.getElementById('chartLabels');
+    bars.innerHTML = months.map((m, i) => {
+      const h = Math.round((vals[i]/max) * 120);
+      const isCurrent = i === months.length - 1;
+      return `<div class="chart-bar-wrap"><div class="chart-bar ${isCurrent?'current':''}" style="height:${h}px" title="₹${vals[i].toLocaleString('en-IN')}"></div></div>`;
+    }).join('');
+    labels.innerHTML = months.map(m => `<div class="chart-bar-wrap"><div class="chart-month">${m}</div></div>`).join('');
+
+    // Recent registrations
+    const recent = [...members].sort((a,b) => (b.id||0)-(a.id||0)).slice(0, 5);
+    document.getElementById('recentTableBody').innerHTML = recent.map(m => `
+      <tr>
+        <td class="td-name">${m.name}</td>
+        <td><span class="pill pill-${m.plan.toLowerCase().replace(' ','-')}">${m.plan}</span></td>
+        <td class="td-gray">${m.joinDate || m.registered || '—'}</td>
+        <td><span class="pill pill-${m.status}">${m.status}</span></td>
+        <td>
+          <div class="action-row">
+            <button class="tbl-btn tbl-btn-view" onclick="openDrawer(${m.id})">View</button>
+            ${m.status==='pending' ? `<button class="tbl-btn tbl-btn-approve" onclick="approveMember(${m.id})">Approve</button>` : ''}
+            <a class="tbl-btn tbl-btn-wa" href="https://wa.me/${m.phone.replace(/\D/g,'')}" target="_blank">WA</a>
+          </div>
+        </td>
+      </tr>
+    `).join('') || '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--gray);">No registrations yet</td></tr>';
+  }
+
+  // ── All Members ──
+  function renderMembers() {
+    const search = document.getElementById('memberSearch').value.toLowerCase();
+    const planF = document.getElementById('memberPlanFilter').value;
+    const statusF = document.getElementById('memberStatusFilter').value;
+    let members = getMembers().filter(m =>
+      (!search || m.name.toLowerCase().includes(search) || m.phone.includes(search)) &&
+      (!planF || m.plan === planF) &&
+      (!statusF || m.status === statusF)
+    );
+    document.getElementById('membersTableBody').innerHTML = members.length ? members.map(m => `
+      <tr>
+        <td class="td-name">${m.name}</td>
+        <td class="td-gray">${m.phone}</td>
+        <td><span class="pill pill-${m.plan.toLowerCase().replace(' ','-')}">${m.plan}</span></td>
+        <td class="td-gray">${m.joinDate || '—'}</td>
+        <td><span class="pill pill-${m.status}">${m.status}</span></td>
+        <td>
+          <div class="action-row">
+            <button class="tbl-btn tbl-btn-view" onclick="openDrawer(${m.id})">View</button>
+            <a class="tbl-btn tbl-btn-wa" href="https://wa.me/${m.phone.replace(/\D/g,'')}" target="_blank">WA</a>
+            <button class="tbl-btn tbl-btn-del" onclick="deleteMember(${m.id})">×</button>
+          </div>
+        </td>
+      </tr>
+    `).join('') : `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">No members found</div><div class="empty-sub">Try adjusting your filters</div></div></td></tr>`;
+  }
+
+  // ── Pending ──
+  function renderPending() {
+    const pending = getMembers().filter(m => m.status === 'pending');
+    document.getElementById('pendingBadge').style.display = pending.length ? 'inline-block' : 'none';
+    document.getElementById('pendingBadge').textContent = pending.length + ' Pending';
+    document.getElementById('pendingTableBody').innerHTML = pending.length ? pending.map(m => `
+      <tr>
+        <td class="td-name">${m.name}</td>
+        <td class="td-gray">${m.phone}</td>
+        <td class="td-gray" style="font-size:12px;">${m.email}</td>
+        <td><span class="pill pill-${m.plan.toLowerCase().replace(' ','-')}">${m.plan}</span></td>
+        <td class="td-gray" style="font-size:12px;max-width:160px;">${m.goal || '—'}</td>
+        <td class="td-gray" style="font-size:12px;">${m.registered || m.joinDate || '—'}</td>
+        <td>
+          <div class="action-row">
+            <button class="tbl-btn tbl-btn-approve" onclick="approveMember(${m.id})">✓ Approve</button>
+            <a class="tbl-btn tbl-btn-wa" href="https://wa.me/${m.phone.replace(/\D/g,'')}" target="_blank">WhatsApp</a>
+            <button class="tbl-btn tbl-btn-view" onclick="openDrawer(${m.id})">View</button>
+          </div>
+        </td>
+      </tr>
+    `).join('') : `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">✅</div><div class="empty-title">All clear!</div><div class="empty-sub">No pending registrations</div></div></td></tr>`;
+  }
+
+  // ── Revenue ──
+  const PLAN_PRICES = { 'Starter': 999, 'Pro': 1799, 'Elite': 2999, 'Personal Training': 1500 };
+  function calcRevenue(members) {
+    return members.filter(m=>m.status==='active').reduce((s,m)=>s+(PLAN_PRICES[m.plan]||0), 0);
+  }
+  function renderRevenue() {
+    const members = getMembers();
+    const active = members.filter(m=>m.status==='active');
+    const monthly = calcRevenue(members);
+    document.getElementById('revenueStats').innerHTML = `
+      <div class="stat-card green"><div class="stat-val">₹${monthly.toLocaleString('en-IN')}</div><div class="stat-lbl">Monthly Revenue</div></div>
+      <div class="stat-card"><div class="stat-val">₹${(monthly*12).toLocaleString('en-IN')}</div><div class="stat-lbl">Projected Annual</div></div>
+      <div class="stat-card blue"><div class="stat-val">${active.length}</div><div class="stat-lbl">Paying Members</div></div>
+      <div class="stat-card"><div class="stat-val">₹${active.length ? Math.round(monthly/active.length).toLocaleString('en-IN') : 0}</div><div class="stat-lbl">Avg Revenue/Member</div></div>
+    `;
+    const plans = Object.keys(PLAN_PRICES);
+    document.getElementById('planBreakdown').innerHTML = plans.map(plan => {
+      const count = active.filter(m=>m.plan===plan).length;
+      const rev = count * PLAN_PRICES[plan];
+      return `<tr>
+        <td><span class="pill pill-${plan.toLowerCase().replace(' ','-')}">${plan}</span></td>
+        <td class="td-gray">${count}</td>
+        <td class="td-gray">₹${PLAN_PRICES[plan].toLocaleString('en-IN')}</td>
+        <td style="font-weight:500;color:var(--gold);">₹${rev.toLocaleString('en-IN')}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // ── Drawer ──
+  let currentDrawerMemberId = null;
+  function openDrawer(id) {
+    const m = getMembers().find(m => m.id === id);
+    if (!m) return;
+    currentDrawerMemberId = id;
+    document.getElementById('dName').textContent = m.name.toUpperCase();
+    document.getElementById('dPlan').textContent = m.plan + ' Plan';
+    document.getElementById('dPhone').textContent = m.phone;
+    document.getElementById('dEmail').textContent = m.email;
+    document.getElementById('dAge').textContent = (m.age ? m.age + ' years' : '—') + (m.gender ? ' · ' + m.gender : '');
+    document.getElementById('dGoal').textContent = m.goal || 'Not specified';
+    document.getElementById('dJoin').textContent = m.joinDate || '—';
+    document.getElementById('dStatus').innerHTML = `<span class="pill pill-${m.status}">${m.status}</span>`;
+    document.getElementById('dWhatsApp').href = `https://wa.me/${m.phone.replace(/\D/g,'')}?text=Hi ${m.name.split(' ')[0]}! Welcome to IronForge. Your ${m.plan} membership has been approved. You'll be added to our community shortly! 💪`;
+    document.getElementById('dApproveBtn').style.display = m.status === 'pending' ? 'flex' : 'none';
+    document.getElementById('drawerOverlay').classList.add('open');
+    document.getElementById('memberDrawer').classList.add('open');
+  }
+  function closeDrawer() {
+    document.getElementById('drawerOverlay').classList.remove('open');
+    document.getElementById('memberDrawer').classList.remove('open');
+  }
+  function approveCurrentMember() {
+    if (currentDrawerMemberId) {
+      approveMember(currentDrawerMemberId);
+      closeDrawer();
+    }
+  }
+
+  // ── Actions ──
+  function approveMember(id) {
+    const members = getMembers();
+    const m = members.find(m => m.id === id);
+    if (m) { m.status = 'active'; saveMembers(members); }
+    showToast('✓ ' + (m?.name || 'Member') + ' approved!');
+    renderDashboard(); renderPending(); if (document.getElementById('page-members').classList.contains('active')) renderMembers();
+  }
+  function deleteMember(id) {
+    if (!confirm('Remove this member?')) return;
+    const members = getMembers().filter(m => m.id !== id);
+    saveMembers(members);
+    showToast('Member removed');
+    renderMembers(); renderDashboard();
+  }
+  function addDemoMember() {
+    const names = ['Vikram Das','Anita Sen','Rohan Mishra','Kavya Iyer','Siddharth Joshi'];
+    const plans = ['Starter','Pro','Elite'];
+    const goals = ['Weight loss','Muscle gain','Fitness','Strength training'];
+    const n = names[Math.floor(Math.random()*names.length)];
+    const members = getMembers();
+    members.push({
+      id: Date.now(), name: n,
+      phone: '+91 9' + Math.floor(Math.random()*9e8+1e8),
+      email: n.toLowerCase().replace(' ','.') + '@email.com',
+      age: Math.floor(Math.random()*20)+20,
+      gender: Math.random()>0.5?'Male':'Female',
+      plan: plans[Math.floor(Math.random()*plans.length)],
+      goal: goals[Math.floor(Math.random()*goals.length)],
+      status: 'pending',
+      joinDate: new Date().toISOString().split('T')[0],
+      registered: new Date().toLocaleString()
+    });
+    saveMembers(members);
+    showToast('Demo member added!');
+    renderPending(); renderDashboard();
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>
