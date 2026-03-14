@@ -185,7 +185,7 @@ nav.solid{
   opacity:0;animation:fadeUp 0.8s 0.8s ease forwards;
 }
 .stat-n{font-family:var(--ff-d);font-size:52px;color:var(--accent);line-height:1;}
-.stat-l{font-family:var(--ff-c);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(200,168,75,0.6);}
+	stat-l{font-family:var(--ff-c);font-size:11px;letter-spacing:3px;text-transform:uppercase;font-weight:700;color:rgba(200,168,75,0.6);}
 
 .scroll-hint{
   position:absolute;bottom:32px;left:52px;z-index:2;
@@ -264,7 +264,7 @@ nav.solid{
 [data-theme="light"] .section{}
 
 .section-tag{
-  font-family:var(--ff-c);font-size:11px;letter-spacing:5px;text-transform:uppercase;
+  font-family:var(--ff-c);font-size:11px;letter-spacing:5px;text-transform:uppercase;font-weight:700;
   color:var(--accent);display:flex;align-items:center;gap:12px;margin-bottom:16px;
 }
 .section-tag::after{content:'';display:block;width:40px;height:1px;background:var(--accent);}
@@ -334,7 +334,7 @@ nav.solid{
 .trainer-title{font-family:var(--ff-c);font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:28px;}
 .trainer-bio{font-size:15px;color:var(--fg2);line-height:1.85;margin-bottom:36px;}
 .cert-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:40px;}
-.cert-tag{font-family:var(--ff-c);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);border:1px solid var(--acc-dm);padding:6px 14px;transition:background 0.2s;}
+.cert-tag{font-family:var(--ff-c);font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--accent);border:1px solid var(--acc-dm);padding:6px 14px;transition:background 0.2s;}
 .cert-tag:hover{background:rgba(200,168,75,0.1);}
 
 /* ══ ACHIEVEMENTS ══ */
@@ -351,7 +351,10 @@ nav.solid{
 
 /* ══ MEMBERSHIP ══ */
 #membership{background:var(--bg);}
-.plans-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:3px;}
+.plans-grid{display:grid;grid-template-columns:repeat(3,minmax(200px,1fr));gap:20px;}
+.membership-layout{display:flex;gap:40px;align-items:start;}
+.special-container{position:relative;border-left:none;padding-left:14px;}
+.special-container::before{content:'';position:absolute;left:-17px;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,transparent 0%,#b0b0b0 10%,#b0b0b0 90%,transparent 100%);}
 .plan-card{background:var(--bg3);padding:48px 36px;border-top:3px solid transparent;position:relative;transition:background 0.3s,transform 0.3s;}
 .plan-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);}
 .plan-card.featured{background:var(--bg2);border-top-color:var(--accent);}
@@ -371,17 +374,25 @@ nav.solid{
 .plan-card:not(.featured) .btn-plan{border:1px solid rgba(200,168,75,0.3);color:var(--accent);background:transparent;}
 .plan-card:not(.featured) .btn-plan:hover{background:rgba(200,168,75,0.07);}
 
+.special-container{display:flex;flex-direction:column;}
+.special-offer-card{background:linear-gradient(135deg,#2a1f00 0%,#3a2f00 50%,#2a1f00 100%);border:2px solid #e8b84b;border-radius:6px;position:relative;overflow:hidden;}
+.special-offer-card::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(232,184,75,0.03) 10px,rgba(232,184,75,0.03) 20px);pointer-events:none;}
+.special-offer-card > :not(.plan-badge){position:relative;z-index:1;}
+.special-offer-card .plan-badge{background:var(--accent);color:#000;left:auto;right:32px;transform:none;top:-2px;border-radius:0;box-shadow:none;}
+[data-theme="light"] .special-offer-card{background:linear-gradient(135deg,#fff9e6 0%,#fff3cc 50%,#fff9e6 100%);border:2px solid #c9880a;}
+.countdown{font-family:var(--ff-b);font-size:12px;color:var(--accent);margin:8px 0 16px;text-align:center;}
+
 /* ══ VISIT ══ */
 #visit{background:var(--bg3);}
 .visit-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start;}
-.info-lbl{font-family:var(--ff-c);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+.info-lbl{font-family:var(--ff-c);font-size:11px;letter-spacing:3px;text-transform:uppercase;font-weight:700;color:var(--accent);margin-bottom:8px;}
 .info-val{font-family:var(--ff-c);font-size:17px;font-weight:600;color:var(--fg);line-height:1.6;margin-bottom:32px;}
 .info-val a{color:var(--fg);transition:color 0.2s;}
 .info-val a:hover{color:var(--accent);}
 .hours-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(128,128,128,0.1);}
 .hours-day{font-size:13px;color:var(--fg2);}
 .hours-time{font-size:13px;color:var(--fg);font-weight:500;}
-.map-box{aspect-ratio:16/10;background:var(--bg4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;border:1px solid rgba(128,128,128,0.15);cursor:pointer;transition:border-color 0.2s;}
+.map-box{width:100%;aspect-ratio:16/10;border:1px solid rgba(128,128,128,0.15);border-radius:4px;overflow:hidden;transition:border-color 0.2s;}
 .map-box:hover{border-color:var(--accent);}
 .map-icon{font-size:38px;opacity:0.5;}
 .map-label{font-family:var(--ff-c);font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--fg2);}
@@ -426,7 +437,7 @@ footer{background:var(--bg3);padding:56px 52px 0;display:grid;grid-template-colu
 .social-row{display:flex;gap:12px;}
 .social-lnk{width:36px;height:36px;border:1px solid rgba(200,168,75,0.2);display:flex;align-items:center;justify-content:center;color:var(--fg2);font-size:14px;transition:all 0.2s;}
 .social-lnk:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);}
-.footer-col h4{font-family:var(--ff-c);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:20px;}
+.footer-col h4{font-family:var(--ff-c);font-size:11px;letter-spacing:3px;text-transform:uppercase;font-weight:700;color:var(--accent);margin-bottom:20px;}
 .footer-col li{margin-bottom:10px;}
 .footer-col a{font-size:13px;color:var(--fg2);transition:color 0.2s;}
 .footer-col a:hover{color:var(--fg);}
@@ -443,7 +454,7 @@ footer{background:var(--bg3);padding:56px 52px 0;display:grid;grid-template-colu
 .modal h3{font-family:var(--ff-d);font-size:38px;letter-spacing:2px;margin-bottom:8px;color:var(--fg);}
 .modal-sub{font-size:13px;color:var(--fg2);margin-bottom:32px;}
 .form-group{margin-bottom:20px;}
-.form-group label{display:block;font-family:var(--ff-c);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+.form-group label{display:block;font-family:var(--ff-c);font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--accent);margin-bottom:8px;}
 .form-group input,.form-group select,.form-group textarea{width:100%;background:var(--bg3);border:1px solid rgba(200,168,75,0.15);color:var(--fg);padding:13px 16px;font-family:var(--ff-b);font-size:15px;outline:none;transition:border-color 0.2s;appearance:none;}
 .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent);}
 .form-group select option{background:var(--bg3);}
@@ -622,34 +633,49 @@ footer{background:var(--bg3);padding:56px 52px 0;display:grid;grid-template-colu
   <div class="section-tag rv rv-up">Membership Plans</div>
   <h2 class="section-h rv rv-up">INVEST IN<br>YOURSELF</h2>
   <p class="section-p rv rv-up">Flexible plans for every level. All plans include WhatsApp community access after activation.</p>
-  <div class="plans-grid stagger">
-    <div class="plan-card rv rv-up">
-      <div class="plan-name">STARTER</div>
-      <div class="plan-price"><span class="price-cur">₹</span><span class="price-amt">999</span><span class="price-per">/ month</span></div>
-      <ul class="plan-features">
-        <li class="on">Gym access 6am–10pm</li><li class="on">All equipment access</li><li class="on">WhatsApp community</li>
-        <li>Personal training sessions</li><li>Nutrition consultation</li><li>Guest passes</li>
-      </ul>
-      <button class="btn-plan" onclick="openModal('Starter')">Get Started</button>
+  <div class="membership-layout">
+    <div class="plans-grid stagger">
+      <div class="plan-card rv rv-up">
+        <div class="plan-name">STARTER</div>
+        <div class="plan-price"><span class="price-cur">₹</span><span class="price-amt">999</span><span class="price-per">/ month</span></div>
+        <ul class="plan-features">
+          <li class="on">Gym access 6am–10pm</li><li class="on">All equipment access</li><li class="on">WhatsApp community</li>
+          <li>Personal training sessions</li><li>Nutrition consultation</li><li>Guest passes</li>
+        </ul>
+        <button class="btn-plan" onclick="openModal('Starter')">Get Started</button>
+      </div>
+      <div class="plan-card featured rv rv-up">
+        <div class="plan-badge">Most Popular</div>
+        <div class="plan-name">PRO</div>
+        <div class="plan-price"><span class="price-cur">₹</span><span class="price-amt">1799</span><span class="price-per">/ month</span></div>
+        <ul class="plan-features">
+          <li class="on">Gym access 5am–11pm</li><li class="on">All equipment access</li><li class="on">WhatsApp community</li>
+          <li class="on">2 PT sessions / month</li><li class="on">Nutrition consultation</li><li>Guest passes</li>
+        </ul>
+        <button class="btn-plan" onclick="openModal('Pro')">Get Started</button>
+      </div>
+      <div class="plan-card rv rv-up">
+        <div class="plan-name">ELITE</div>
+        <div class="plan-price"><span class="price-cur">₹</span><span class="price-amt">2999</span><span class="price-per">/ month</span></div>
+        <ul class="plan-features">
+          <li class="on">24/7 gym access</li><li class="on">All equipment access</li><li class="on">WhatsApp community</li>
+          <li class="on">Unlimited PT sessions</li><li class="on">Nutrition plan</li><li class="on">2 guest passes / month</li>
+        </ul>
+        <button class="btn-plan" onclick="openModal('Elite')">Get Started</button>
+      </div>
     </div>
-    <div class="plan-card featured rv rv-up">
-      <div class="plan-badge">Most Popular</div>
-      <div class="plan-name">PRO</div>
-      <div class="plan-price"><span class="price-cur">₹</span><span class="price-amt">1799</span><span class="price-per">/ month</span></div>
-      <ul class="plan-features">
-        <li class="on">Gym access 5am–11pm</li><li class="on">All equipment access</li><li class="on">WhatsApp community</li>
-        <li class="on">2 PT sessions / month</li><li class="on">Nutrition consultation</li><li>Guest passes</li>
-      </ul>
-      <button class="btn-plan" onclick="openModal('Pro')">Get Started</button>
-    </div>
-    <div class="plan-card rv rv-up">
-      <div class="plan-name">ELITE</div>
-      <div class="plan-price"><span class="price-cur">₹</span><span class="price-amt">2999</span><span class="price-per">/ month</span></div>
-      <ul class="plan-features">
-        <li class="on">24/7 gym access</li><li class="on">All equipment access</li><li class="on">WhatsApp community</li>
-        <li class="on">Unlimited PT sessions</li><li class="on">Nutrition plan</li><li class="on">2 guest passes / month</li>
-      </ul>
-      <button class="btn-plan" onclick="openModal('Elite')">Get Started</button>
+    <div class="special-container">
+      <div class="plan-card featured rv rv-up special-offer-card">
+        <div class="plan-badge">Holi Special</div>
+        <div class="plan-name">HOLI SPECIAL</div>
+        <div class="plan-price"><span class="price-cur">₹</span><span class="price-amt">1499</span><span class="price-per">/ month</span></div>
+        <div class="countdown">Holi Offer ends in: <span id="timer">23:59:59</span></div>
+        <ul class="plan-features">
+          <li class="on">Gym access 5am–11pm</li><li class="on">All equipment access</li><li class="on">WhatsApp community</li>
+          <li class="on">Nutrition consultation</li><li>Guest passes</li>
+        </ul>
+        <button class="btn-plan" onclick="openModal('Holi Special')">Get Started</button>
+      </div>
     </div>
   </div>
 </section>
@@ -676,12 +702,7 @@ footer{background:var(--bg3);padding:56px 52px 0;display:grid;grid-template-colu
       </a>
     </div>
     <div class="rv rv-right">
-      <a href="https://maps.google.com" target="_blank" class="map-box">
-        <span class="map-icon">📍</span>
-        <span class="map-label">Open in Google Maps</span>
-        <span class="map-addr">12, Steel Road, Bhubaneswar</span>
-      </a>
-      <p style="font-size:12px;color:var(--fg2);margin-top:12px;line-height:1.6;">Replace with your actual Google Maps embed link.</p>
+      <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d7486.091316067678!2d85.7967118!3d20.2569411!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a19a78097ef2bf9%3A0x14e6eb16b8f4e643!2sFitness%20king%20Bbsr!5e0!3m2!1sen!2sin!4v1773483893289!5m2!1sen!2sin" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="map-box"></iframe>
     </div>
   </div>
 </section>
@@ -775,6 +796,7 @@ footer{background:var(--bg3);padding:56px 52px 0;display:grid;grid-template-colu
         <option value="Starter">Starter — ₹999/month</option>
         <option value="Pro">Pro — ₹1,799/month (Most Popular)</option>
         <option value="Elite">Elite — ₹2,999/month</option>
+        <option value="Festive Special">Festive Special — ₹1,499/month (Special Offer)</option>
         <option value="Personal Training">Personal Training Session</option>
       </select>
     </div>
@@ -927,6 +949,24 @@ function closeSuccess() {
 document.getElementById('successOverlay').addEventListener('click', function(e) {
   if (e.target === this) closeSuccess();
 });
+
+// Countdown timer
+function updateCountdown() {
+  const now = new Date();
+  const midnight = new Date();
+  midnight.setHours(23, 59, 59, 999);
+  const diff = midnight - now;
+  if (diff <= 0) {
+    document.getElementById('timer').textContent = '00:00:00';
+    return;
+  }
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+  document.getElementById('timer').textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+setInterval(updateCountdown, 1000);
+updateCountdown();
 </script>
 </body>
 </html>
